@@ -3,16 +3,17 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 
 
-engine = create_engine("sqlite:///inventory.db", echo=False)
+engine = create_engine("sqlite:///inventory.db", echo=True)
+Base = declarative_base()
 Session = sessionmaker(bind=engine)
 session = Session()
-Base = declarative_base()
+
 
 class Brands(Base):
     __tablename__ = "brands"
 
     brand_id = Column(Integer, primary_key=True)
-    brand_name = Column(String, nullable=False)
+    brand_name = Column(String)
 
     def __repr__(self):
         return f"""
