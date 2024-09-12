@@ -30,9 +30,10 @@ def menu():
 def clean_price(price_str):
     price_float = float(price_str)
     print(price_float)
+    # https://teamtreehouse.com/library/sqlalchemy-basics/cleaning-data
 
 
-    
+
 
 def add_csv():
         with open('./csv/inventory.csv') as csvfile:
