@@ -4,7 +4,7 @@ Local Setup Steps
     Open the terminal in your IDE
     Install virtual environment
         Mac: python3 -m pip install --user virtualenv
-        Windows: py -m pip install --user virtualenv
+        Windows: python -m pip install --user virtualenv
     Create a virtual environment
         Mac: python3 -m venv env
         Windows: python -m venv env

@@ -21,17 +21,16 @@ class Brands(Base):
         Brand Name: {self.brand_name}
         """
     
-    
 
 class Products(Base):
     __tablename__ = "products"
 
     product_id = Column(Integer, primary_key=True, autoincrement=True, unique=True)
     brand_id = Column(Integer, ForeignKey("brands.brand_id"))
-    product_name = Column(String)
-    product_quantity = Column(Integer)
-    product_price = Column(Integer)
-    date_updated = Column(Date)
+    product_name = Column(String, nullable=False)
+    product_quantity = Column(Integer, nullable=False)
+    product_price = Column(Integer, nullable=False)
+    date_updated = Column(Date, nullable=False, server_default="now")
     
 
     def __repr__(self):
@@ -43,3 +42,9 @@ class Products(Base):
         Price: {self.product_price}
         Last Updated: {self.date_updated}
         """
+    
+
+
+
+if __name__ == "__main__":
+    Base.metadata.create_all(engine)
