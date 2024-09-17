@@ -1,12 +1,13 @@
+from sqlalchemy import (create_engine, Column, Integer, 
+                        String, Date, ForeignKey)
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
-from sqlalchemy import create_engine, Column, Integer, String, Date, ForeignKey
 
 
 engine = create_engine("sqlite:///inventory.db", echo=False)
-Base = declarative_base()
 Session = sessionmaker(bind=engine)
 session = Session()
+Base = declarative_base()
 
 
 class Brands(Base):
@@ -47,8 +48,6 @@ class Products(Base):
         Last Updated: {self.date_updated}
         """
     
-
-
 
 if __name__ == "__main__":
     Base.metadata.create_all(engine)
