@@ -92,4 +92,4 @@ Menu Option: B
 
     Exceeds Expectations:
         ☐ The csv files contain a header row with the field titles @started(24-09-11 19:28)
-        ☐ The data is in the same format as the original csv with the price as `$0.00` rather than cents, date as `m/d/yyy`, and the brand id as the brand name @started(24-09-11 19:28)
+        ☐ The data is in the same format as the original csv with the price as `$0.00` rather than cents, date as `m/d/yyyy`, and the brand id as the brand name @started(24-09-11 19:28)

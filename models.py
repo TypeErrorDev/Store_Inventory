@@ -13,10 +13,12 @@ class Brands(Base):
     __tablename__ = "brands"
 
     brand_id = Column(Integer, primary_key=True, autoincrement=True, unique=True)
-    brand_name = Column(String, nullable=False)
+    brand_name = Column(String, nullable=False,)
+    products = relationship("Products", back_populates="brand")
 
     def __repr__(self):
-        return f"""
+        return f""" 
+        \n***** BRANDS *****
         \nBrand ID: {self.brand_id}\r
         Brand Name: {self.brand_name}
         """
@@ -31,6 +33,8 @@ class Products(Base):
     product_quantity = Column(Integer, nullable=False)
     product_price = Column(Integer, nullable=False)
     date_updated = Column(Date, nullable=False, server_default="now")
+
+    brand = relationship("Brands", back_populates="products")
     
 
     def __repr__(self):
