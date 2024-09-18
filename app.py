@@ -1,18 +1,8 @@
 from models import Base, session, Products, Brands, engine
-import datetime
+from datetime import datetime
 import csv
 
-# to run the app, go to .\env\Scripts\activate and the python app.py
-
-
-
 def menu():
-    # create menu for ONLY allowing the following options
-    # 'v' (View a single product's inventory),
-    # 'n' (Add a new product to the database),
-    # 'a' (View an analysis),
-    # 'b' (Make a backup of the entire inventory),
-    # 'x' (Exit app)
     while True:
         print('''
             \n****** Inventory Menu ******
@@ -28,11 +18,19 @@ def menu():
             input('''\n****** EEROR ******
                   \nPlease choose only the options above.
                   \rPress ENTER to try again.''')
-    
 
 
 def clean_date(date_str):
-    pass
+    try:
+        date = datetime.strptime(date_str, '%m/%d/%Y').date()
+        print(date.strftime('%m/%d/%Y'))
+    except ValueError:
+        print(f'''
+              \n****** DATE ERROR ******
+              \nInvalid date format 
+              \n{date_str} needs to be a valid date and in mm/dd/yyyy format
+              \n************************''')
+        return
 
 
 def clean_price(price_str):
