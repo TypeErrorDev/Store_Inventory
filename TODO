@@ -49,10 +49,10 @@ Add existing data to the database
 Menu Prompts
     Meets Expectations:
         When the program is run the user should be prompted with a simple menu of the following options:
-            ☐ "View a single product's inventory" @started(24-09-11 19:28)
-            ☐ "Add a new product to the database" @started(24-09-11 19:28)
-            ☐ "View an analysis" @started(24-09-11 19:28)
-            ☐ "Make a backup of the entire inventory" @started(24-09-11 19:28)
+            ✔ "View a single product's inventory" @started(24-09-11 19:28) @done(24-09-19 11:10) @lasted(1w15h42m37s)
+            ✔ "Add a new product to the database" @started(24-09-11 19:28) @done(24-09-19 11:10) @lasted(1w15h42m37s)
+            ✔ "View an analysis" @started(24-09-11 19:28) @done(24-09-19 11:10) @lasted(1w15h42m37s)
+            ✔ "Make a backup of the entire inventory" @started(24-09-11 19:28) @done(24-09-19 11:10) @lasted(1w15h42m37s)
             *NOTE: 
                 the user will be able to make this selection by pressing a single character(`v`, `n`, `a`, or `b`)
                 If the user enters any character other than `v`, `n`, `a`, or `b`, then the app will notify them of their error and they can try again.

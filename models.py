@@ -33,7 +33,7 @@ class Products(Base):
     product_name = Column(String, nullable=False)
     product_quantity = Column(Integer, nullable=False)
     product_price = Column(Integer, nullable=False)
-    date_updated = Column(Date, nullable=False, server_default="now")
+    date_updated = Column(Date, nullable=False)
 
     brand = relationship("Brands", back_populates="products")
     
