@@ -23,23 +23,20 @@ def menu():
 
 def clean_date(date_str):
     try:
-        date = datetime.strptime(date_str, '%m/%d/%Y').date()
-        return date.strftime('%m/%d/%Y')
+        return datetime.strptime(date_str, '%m/%d/%Y').date()
     except ValueError:
         print(f'''
-              \n****** DATE ERROR ******
-              \nInvalid date format 
-              \n{date_str} needs to be a valid date and in mm/dd/yyyy format
-              \n************************''')
+            \n****** DATE ERROR ******
+            \nInvalid date format 
+            \n{date_str} needs to be a valid date and in mm/dd/yyyy format
+            \n************************''')
         return
 
 
 def clean_price(price_str):
     try:
         price_str = price_str.replace('$', '')
-        price = float(price_str)
-        price = round(price, 2)
-        print( int(price) if price.is_integer() else price)
+        return int(round(float(price_str) * 100))        
     except ValueError:
         print(f'''
                 \n****** PRICE ERROR ******
@@ -74,17 +71,30 @@ def initialize_brands_csv():
 
 
 def initialize_inventory_csv(existing_brands):
-    products_added = 0
     with open('inventory.csv') as inventory_CSV:
         data = csv.reader(inventory_CSV)
         next(data)
-        for row in data:
-            product_name = row[0]
-            product_price = clean_price(row[1])
-            product_quantity = int(row[2])
-            date_updated = clean_date(row[3])
-            brand = row[4]
-            
+        for row in data:            
+            product_name = row[0].strip()  
+            product_price = clean_price(row[1].strip())  
+            product_quantity = int(row[2].strip())   
+            date_updated = clean_date(row[3].strip())  
+            brand_name = row[4].strip()  
+            # Ensure that the price and date are valid
+            if product_price is not None and date_updated is not None:
+                # Fetch brand ID based on the brand name
+                db_brand_name = session.query(Brands).filter(Brands.brand_name == brand_name).one_or_none()
+                brand_id = db_brand_name.brand_id if db_brand_name else None
+                new_product = Products(
+                    product_name=product_name,
+                    product_price=product_price,
+                    product_quantity=product_quantity,
+                    date_updated=date_updated,
+                    brand_id=brand_id
+                )
+                session.add(new_product)
+        session.commit()
+        print("Inventory data added successfully.")
 
 
 def check_existing_brands():
@@ -157,8 +167,10 @@ def app():
 
 if __name__ == '__main__':
     Base.metadata.create_all(engine)
+
     existing_brands = initialize_brands_csv()
     initialize_inventory_csv(existing_brands)
-    app()
 
-    # clean_price("15.55")
+
+    # for product in session.query(Products):
+    #     print(product)
