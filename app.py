@@ -2,6 +2,7 @@ from models import Base, session, Products, Brands, engine
 from datetime import datetime
 from sqlalchemy import select
 import csv
+import time
 
 def menu():
     while True:
@@ -124,6 +125,10 @@ def app():
         choice = menu()
 
         if choice == 'v':
+            # for product in session.query(Products):
+            #     print(f'{product.product_name} | {product.product_price} | {product.product_quantity} | {product.date_updated} | {product.brand}')
+            # input('\nPress ENTER')
+
             # View a single product's inventory by product_id
                 # dynamically display the product_id's (first product_id - last product_id)
                 # *** product_name ***
@@ -138,7 +143,7 @@ def app():
 
                 # Press ENTER to return to the main menu..
             pass
-        if choice == 'n':
+        elif choice == 'n':
             # Add product
                 name = input('What is the name of the product: ')
                 price_error = True
@@ -158,6 +163,7 @@ def app():
                         date_error = False
                 brand = input('What is the brand name: ')
                 # What is the brand name?
+
                     # If there is a duplicate product_name and brand, prompt the user to see if they want to update the prouct 
                         # if not, then cancel and return to the main menu
                         # if they do want to update the product, then the product will be updated with the new information and the user will be notified "{product_name} has been Updated"
@@ -166,7 +172,10 @@ def app():
 
                 # Add products to session
                 new_product = Products(product_name = name,product_price = price, product_quantity = quantity, date_updated = date)
+                new_brand = Brands(brand_name = brand)
+
                 session.add(new_product)
+                session.add(new_brand)
                 session.commit()
                 print(f'''\nSummary of product added to inventory:
                         \nProduct Name: {name}
@@ -174,9 +183,9 @@ def app():
                         \rProduct QTY: {quantity}
                         \rProduct Brand: {brand}
                     ''')
-                input('Press ENTER to return to the main menu...')
-                menu()
-        if choice == 'a':
+                time.sleep(1.5)
+                
+        elif choice == 'a':
             # Analyze the inventory by:
                 # most expensive brand
                 # most common brand
@@ -186,7 +195,7 @@ def app():
                 
                 # Press ENTER to return to the main menu..
             pass
-        if choice == 'b':
+        elif choice == 'b':
             # Create a backup of the inventory to a csv file
                 # Needs to create a csv file with the following constraints:
                     # header row with the field titles
