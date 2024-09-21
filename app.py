@@ -25,18 +25,18 @@ def clean_date(date_str):
     try:
         return datetime.strptime(date_str, '%m/%d/%Y').date()
     except ValueError:
-        print(f'''
+        input(f'''
             \n****** DATE ERROR ******
             \nInvalid date format 
             \n{date_str} needs to be a valid date and in mm/dd/yyyy format
             \n************************''')
-        return
+        return None
 
 
 def clean_price(price_str):
     try:
         price_str = price_str.replace('$', '')
-        return int(round(float(price_str) * 100))        
+        return int(float(price_str) * 100)       
     except ValueError:
         print(f'''
                 \n****** PRICE ERROR ******
@@ -71,37 +71,49 @@ def initialize_brands_csv():
 
 
 def initialize_inventory_csv(existing_brands):
-    with open('inventory.csv') as inventory_CSV:
-        data = csv.reader(inventory_CSV)
-        next(data)
-        for row in data:            
-            product_name = row[0].strip()  
-            product_price = clean_price(row[1].strip())  
-            product_quantity = int(row[2].strip())   
-            date_updated = clean_date(row[3].strip())  
-            brand_name = row[4].strip()  
-            # Ensure that the price and date are valid
-            if product_price is not None and date_updated is not None:
-                # Fetch brand ID based on the brand name
-                db_brand_name = session.query(Brands).filter(Brands.brand_name == brand_name).one_or_none()
-                brand_id = db_brand_name.brand_id if db_brand_name else None
-                new_product = Products(
-                    product_name=product_name,
-                    product_price=product_price,
-                    product_quantity=product_quantity,
-                    date_updated=date_updated,
-                    brand_id=brand_id
-                )
-                session.add(new_product)
-        session.commit()
-        print("Inventory data added successfully.")
+    try:
+        with open('inventory.csv') as inventory_CSV:
+            data = csv.reader(inventory_CSV)
+            next(data)
+
+            # existing_brand_names = set(brand.brand_name for brand in existing_brands)
+            # existing_products = {
+            #     (product.product_name, product.brand_id): product
+            #     for product in session.query(Products).all()
+            # }
+
+            for row in data:            
+                product_name = row[0].strip()  
+                product_price = clean_price(row[1].strip())  
+                product_quantity = int(row[2].strip())   
+                date_updated = clean_date(row[3].strip())  
+                brand_name = row[4].strip()  
+                # Ensure that the price and date are valid
+                if product_price is not None and date_updated is not None:
+                    # Fetch brand ID based on the brand name
+                    db_brand_name = session.query(Brands).filter(Brands.brand_name == brand_name).one_or_none()
+                    brand_id = db_brand_name.brand_id if db_brand_name else None
+                    new_product = Products(
+                        product_name=product_name,
+                        product_price=product_price,
+                        product_quantity=product_quantity,
+                        date_updated=date_updated,
+                        brand_id=brand_id
+                    )
+                    session.add(new_product)
+            session.commit()
+            print("Inventory data added successfully.")
+    except FileNotFoundError:
+        print("inventory.csv file not found.")
+    except Exception as e:
+        print(f"Error processing inventory.csv: {e}")
 
 
-def check_existing_brands():
+def check_for_existing_brands():
     pass
 
 
-def check_exisiting_product():
+def check_for_exisiting_product():
     pass
 
 
@@ -127,16 +139,43 @@ def app():
                 # Press ENTER to return to the main menu..
             pass
         if choice == 'n':
-            # What is the name of the product?
-            # How much does it cost?
-            # How many are in stock?
-            # What is the brand name?
-                # If there is a duplicate product_name and brand, prompt the user to see if they want to update the prouct 
-                    # if not, then cancel and return to the main menu
-                    # if they do want to update the product, then the product will be updated with the new information and the user will be notified "{product_name} has been Updated"
-                    # if there is a new brand, ensure to update the brand table with the new brand
-            # Return a summary of the product that was added
-            pass
+            # Add product
+                name = input('What is the name of the product: ')
+                price_error = True
+                while price_error:
+                    price = input('How much does it cost (Ex: 10.99): ')
+                    price = clean_price(price)
+                    if type(price) == int:
+                        price_error = False
+                        print(price)
+                quantity = input('How many are in stock: ')
+                # Date Updated...How do I add the current timestamp for record being committed/updated
+                date_error = True
+                while date_error:
+                    date = input('Created date (Ex: 10/01/2019): ')
+                    date = clean_date(date)
+                    if date is not None:
+                        date_error = False
+                brand = input('What is the brand name: ')
+                # What is the brand name?
+                    # If there is a duplicate product_name and brand, prompt the user to see if they want to update the prouct 
+                        # if not, then cancel and return to the main menu
+                        # if they do want to update the product, then the product will be updated with the new information and the user will be notified "{product_name} has been Updated"
+                        # if there is a new brand, ensure to update the brand table with the new brand
+                # Return a summary of the product that was added
+
+                # Add products to session
+                new_product = Products(product_name = name,product_price = price, product_quantity = quantity, date_updated = date)
+                session.add(new_product)
+                session.commit()
+                print(f'''\nSummary of product added to inventory:
+                        \nProduct Name: {name}
+                        \rProduct Cost: {price}
+                        \rProduct QTY: {quantity}
+                        \rProduct Brand: {brand}
+                    ''')
+                input('Press ENTER to return to the main menu...')
+                menu()
         if choice == 'a':
             # Analyze the inventory by:
                 # most expensive brand
@@ -167,10 +206,6 @@ def app():
 
 if __name__ == '__main__':
     Base.metadata.create_all(engine)
-
     existing_brands = initialize_brands_csv()
     initialize_inventory_csv(existing_brands)
-
-
-    # for product in session.query(Products):
-    #     print(product)
+    app()
