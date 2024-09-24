@@ -110,12 +110,14 @@ def initialize_inventory_csv(existing_brands):
         print(f"Error processing inventory.csv: {e}")
 
 
-def check_for_existing_brands():
-    pass
+def check_for_existing_brands(brand_name):
+    return session.query(Brands).filter(Brands.brand_name == brand_name).one_or_none()
 
-
-def check_for_exisiting_product():
-    pass
+def check_for_existing_product(name, brand_id):
+    return session.query(Products).filter(
+        Products.product_name == name,
+        Products.brand_id == brand_id
+    ).one_or_none()
 
 
 def app():
@@ -125,9 +127,14 @@ def app():
         choice = menu()
 
         if choice == 'v':
-            # for product in session.query(Products):
-            #     print(f'{product.product_name} | {product.product_price} | {product.product_quantity} | {product.date_updated} | {product.brand}')
-            # input('\nPress ENTER')
+
+
+            for brand in session.query(Brands).all():
+                print(f'''\n{brand.brand_id} - {brand.brand_name}''')
+
+
+            # choice = input('\nWhat would you like to do? ').lower().strip()
+            # view = select(Brands).where(Brands.brand_name == choice)
 
             # View a single product's inventory by product_id
                 # dynamically display the product_id's (first product_id - last product_id)
@@ -142,7 +149,7 @@ def app():
                 # ************************
 
                 # Press ENTER to return to the main menu..
-            pass
+
         elif choice == 'n':
             # Add product
                 name = input('What is the name of the product: ')
@@ -161,30 +168,36 @@ def app():
                     date = clean_date(date)
                     if date is not None:
                         date_error = False
-                brand = input('What is the brand name: ')
-                # What is the brand name?
+                brand = input('What is the brand name: ') 
 
-                    # If there is a duplicate product_name and brand, prompt the user to see if they want to update the prouct 
-                        # if not, then cancel and return to the main menu
-                        # if they do want to update the product, then the product will be updated with the new information and the user will be notified "{product_name} has been Updated"
-                        # if there is a new brand, ensure to update the brand table with the new brand
-                # Return a summary of the product that was added
+                # checking for duplicates
+                brand_in_db = session.query(Brands).filter(Brands.brand_name == brand).one_or_none()
+                brand_id = brand_in_db.brand_id if brand_in_db else None
+                products_in_db = check_for_existing_product(name, brand_id)
+                if products_in_db:
+                    user_choice = input(f'"{name}" is already in the Inventory. Shall we update the record? (y/n): ').strip().lower()
+                    if user_choice == 'y':
+                        products_in_db.product_name = name
+                        products_in_db.product_quantity = quantity
+                        products_in_db.date_updated = date
+                        session.add()
+                        session.commit()
+                        print(f'You have successfully updated {name}')
+                    else:
+                        print('Product addition canceled...')
+                else:
+                    new_product = Products(product_name = name,product_price = price, product_quantity = quantity, date_updated = date)
+                    new_brand = Brands(brand_name = brand)
 
-                # Add products to session
-                new_product = Products(product_name = name,product_price = price, product_quantity = quantity, date_updated = date)
-                new_brand = Brands(brand_name = brand)
-
-                session.add(new_product)
-                session.add(new_brand)
-                session.commit()
-                print(f'''\nSummary of product added to inventory:
-                        \nProduct Name: {name}
-                        \rProduct Cost: {price}
-                        \rProduct QTY: {quantity}
-                        \rProduct Brand: {brand}
-                    ''')
-                time.sleep(1.5)
-                
+                    session.add(new_product)
+                    session.add(new_brand)
+                    session.commit()
+                    print(f'''\nSummary of product added to inventory:
+                            \nProduct Name: {name}
+                            \rProduct Cost: {price}
+                            \rProduct QTY: {quantity}
+                            \rProduct Brand: {brand}
+                        ''')
         elif choice == 'a':
             # Analyze the inventory by:
                 # most expensive brand
