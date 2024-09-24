@@ -26,7 +26,7 @@ def clean_date(date_str):
     try:
         return datetime.strptime(date_str, '%m/%d/%Y').date()
     except ValueError:
-        input(f'''
+        print(f'''
             \n****** DATE ERROR ******
             \nInvalid date format 
             \n{date_str} needs to be a valid date and in mm/dd/yyyy format
