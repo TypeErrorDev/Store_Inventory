@@ -1,8 +1,9 @@
 from models import Base, session, Products, Brands, engine
 from datetime import datetime
-from sqlalchemy import select
+from sqlalchemy import select, func
 import csv
 import time
+
 
 def menu():
     while True:
@@ -46,6 +47,30 @@ def clean_price(price_str):
                 \nEx: 10.99
                 \n*************************''')
         return None
+
+
+def clean_id(id_str, options):
+    try:
+        product_id = int(id_str)
+    except ValueError:
+        print(f'''
+                \n****** ID ERROR ******
+                \nInvalid ID 
+                \n{id_str} needs to be a number
+                \nPress ENTER to try again..
+                \n*************************''')
+        return None
+    else:
+        if product_id in options:
+            return product_id
+        else:
+            print(f'''
+                \n****** ID ERROR ******
+                \nInvalid ID 
+                \n"{id_str}" needs to be a number within the Product ID range above
+                \nPress ENTER to try again..
+                \n*************************''')
+            return
 
 
 def initialize_brands_csv():
@@ -113,11 +138,18 @@ def initialize_inventory_csv(existing_brands):
 def check_for_existing_brands(brand_name):
     return session.query(Brands).filter(Brands.brand_name == brand_name).one_or_none()
 
+
 def check_for_existing_product(name, brand_id):
     return session.query(Products).filter(
         Products.product_name == name,
         Products.brand_id == brand_id
     ).one_or_none()
+
+
+def get_product_id_range():
+    min_id = session.query(func.min(Products.product_id)).scalar()
+    max_id = session.query(func.max(Products.product_id)).scalar()
+    return min_id, max_id
 
 
 def app():
@@ -127,14 +159,29 @@ def app():
         choice = menu()
 
         if choice == 'v':
+            min_id, max_id = get_product_id_range()
+            id_options = []
+            for product in session.query(Products):
+                id_options.append(product.product_id)
+            id_error = True
+            while id_error:
+                id_choice = input(f'''
+                    \nProduct ID Range: {min_id}-{max_id}
+                    \nWhich Product ID do you want to view: ''')
+                id_choice = clean_id(id_choice, id_options)
+                if type(id_choice) == int:
+                    id_error = False
+            the_product = session.query(Products).filter(Products.product_id == id_choice).first()
+            print(f'''
+                  \nID: {the_product.product_id}
+                  \rName: {the_product.product_name}
+                  \rQuantity: {the_product.product_quantity}
+                  \rPrice: {the_product.product_price}
+                  \rLast Updated: {the_product.date_updated.strftime('%m/%d/%Y')}
+                  ''')
 
 
-            for brand in session.query(Brands).all():
-                print(f'''\n{brand.brand_id} - {brand.brand_name}''')
 
-
-            # choice = input('\nWhat would you like to do? ').lower().strip()
-            # view = select(Brands).where(Brands.brand_name == choice)
 
             # View a single product's inventory by product_id
                 # dynamically display the product_id's (first product_id - last product_id)
@@ -149,7 +196,6 @@ def app():
                 # ************************
 
                 # Press ENTER to return to the main menu..
-
         elif choice == 'n':
             # Add product
                 name = input('What is the name of the product: ')
@@ -221,7 +267,7 @@ def app():
                 # If the backup was not successful, display the error message
                 # Press ENTER to return to the main menu..
             pass
-        else:
+        elif choice == 'q':
             print('\n****** EXITING THE APP! ******')
             app_running = False
 
