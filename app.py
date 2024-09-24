@@ -101,13 +101,6 @@ def initialize_inventory_csv(existing_brands):
         with open('inventory.csv') as inventory_CSV:
             data = csv.reader(inventory_CSV)
             next(data)
-
-            # existing_brand_names = set(brand.brand_name for brand in existing_brands)
-            # existing_products = {
-            #     (product.product_name, product.brand_id): product
-            #     for product in session.query(Products).all()
-            # }
-
             for row in data:            
                 product_name = row[0].strip()  
                 product_price = clean_price(row[1].strip())  
@@ -116,17 +109,38 @@ def initialize_inventory_csv(existing_brands):
                 brand_name = row[4].strip()  
                 # Ensure that the price and date are valid
                 if product_price is not None and date_updated is not None:
-                    # Fetch brand ID based on the brand name
-                    db_brand_name = session.query(Brands).filter(Brands.brand_name == brand_name).one_or_none()
-                    brand_id = db_brand_name.brand_id if db_brand_name else None
-                    new_product = Products(
-                        product_name=product_name,
-                        product_price=product_price,
-                        product_quantity=product_quantity,
-                        date_updated=date_updated,
-                        brand_id=brand_id
-                    )
-                    session.add(new_product)
+                    # Check if the brand already exists in the database
+                    brand = check_for_existing_brands(brand_name)
+                    if brand:
+                        brand_id = brand.brand_id
+                    else:
+                        # Create a new brand
+                        brand = Brands(brand_name=brand_name)
+                        session.add(brand)
+                        session.flush()
+                        brand_id = brand.brand_id
+
+                    # Check if the product already exists in the database
+                    existing_product = session.query(Products).filter(
+                        Products.product_name == product_name,
+                        Products.brand_id == brand_id
+                    ).first()
+
+                    if existing_product:
+                        # Update the existing product
+                        existing_product.product_quantity = product_quantity
+                        existing_product.date_updated = date_updated
+                        session.add(existing_product)
+                    else:
+                        # Add a new product
+                        new_product = Products(
+                            product_name=product_name,
+                            product_price=product_price,
+                            product_quantity=product_quantity,
+                            date_updated=date_updated,
+                            brand_id=brand_id
+                        )
+                        session.add(new_product)
             session.commit()
             print("Inventory data added successfully.")
     except FileNotFoundError:
@@ -136,7 +150,11 @@ def initialize_inventory_csv(existing_brands):
 
 
 def check_for_existing_brands(brand_name):
-    return session.query(Brands).filter(Brands.brand_name == brand_name).one_or_none()
+    try:
+        return session.query(Brands).filter(Brands.brand_name == brand_name).one_or_none()
+    except sqlalchemy.exc.MultipleResultsFound:
+        print(f"You are duplicating an item with the brand name of '{brand_name}'. We'll use the one thats already in the Database")
+        return session.query(Brands).filter(Brands.brand_name == brand_name).first()
 
 
 def check_for_existing_product(name, brand_id):
@@ -154,10 +172,8 @@ def get_product_id_range():
 
 def app():
     app_running = True
-
     while app_running:
         choice = menu()
-
         if choice == 'v':
             min_id, max_id = get_product_id_range()
             id_options = []
@@ -179,23 +195,6 @@ def app():
                   \rPrice: {the_product.product_price}
                   \rLast Updated: {the_product.date_updated.strftime('%m/%d/%Y')}
                   ''')
-
-
-
-
-            # View a single product's inventory by product_id
-                # dynamically display the product_id's (first product_id - last product_id)
-                # *** product_name ***
-                # Price: 
-                # Quantity:
-                # Brand:
-                # Last Updated: (dynamic date)
-
-                # Update the product: send to 'n' option
-                # Delete the product: run the delete function
-                # ************************
-
-                # Press ENTER to return to the main menu..
         elif choice == 'n':
             # Add product
                 name = input('What is the name of the product: ')
