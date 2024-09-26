@@ -28,20 +28,20 @@ The Product Model
 
 CSV to Database
     Meets Expectations:
-        ☐ All data from `inventory.csv` and `brands.csv` were read and cleaned before adding it to the database @started(24-09-11 19:28)
-        ☐ `product_quantity` was stored as an INTEGER @started(24-09-11 19:28)
-        ☐ `product_price` was stored as an INTEGER converted to cents (ex: $3.19 becomes 319) @started(24-09-11 19:28)
-        ☐ `date_updated` will be stored as a DATE object @started(24-09-11 19:28)
-        ☐ `brand_id` must be an INTEGER and foreign key on the products table @started(24-09-11 19:28)
+        ✔ All data from `inventory.csv` and `brands.csv` were read and cleaned before adding it to the database @started(24-09-11 19:28) @done(24-09-26 08:39) @lasted(2w13h11m9s)
+        ✔ `product_quantity` was stored as an INTEGER @started(24-09-11 19:28) @done(24-09-26 08:39) @lasted(2w13h11m9s)
+        ✔ `product_price` was stored as an INTEGER converted to cents (ex: $3.19 becomes 319) @started(24-09-11 19:28) @done(24-09-26 08:39) @lasted(2w13h11m9s)
+        ✔ `date_updated` will be stored as a DATE object @started(24-09-11 19:28) @done(24-09-26 08:39) @lasted(2w13h11m9s)
+        ✔ `brand_id` must be an INTEGER and foreign key on the products table @started(24-09-11 19:28) @done(24-09-26 08:39) @lasted(2w13h11m9s)
 
 Add existing data to the database
     Meets Expectations:
         ☐ The app successfully adds each product contained in the `inventory.csv` file to the database, with the correct value in the correct column @started(24-09-11 19:28)
-        ☐ `product_quantity` as an INTEGER @started(24-09-11 19:28)
-        ☐ `product_price` as an INTEGER @started(24-09-11 19:28)
-        ☐ `date_updated` as a DATE object @started(24-09-11 19:28)
+        ✔ `product_quantity` as an INTEGER @started(24-09-11 19:28) @done(24-09-26 08:39) @lasted(2w13h11m30s)
+        ✔ `product_price` as an INTEGER @started(24-09-11 19:28) @done(24-09-26 08:39) @lasted(2w13h11m30s)
+        ✔ `date_updated` as a DATE object @started(24-09-11 19:28) @done(24-09-26 08:39) @lasted(2w13h11m30s)
         ☐ `brand_id` must be an INTEGER and foreign key on the products table @started(24-09-11 19:28)
-        ☐ The `brands.csv` file has also been added to the database @started(24-09-11 19:28)
+        ✔ The `brands.csv` file has also been added to the database @started(24-09-11 19:28) @done(24-09-26 08:39) @lasted(2w13h11m25s)
 
     Exceeds Expectations:
         ☐ When the contents of `inventory.csv` are being imported and a duplicate product name is found, the app will check to see which product entry was most recently updated and overwrite existing data. @started(24-09-11 19:28)
@@ -59,7 +59,7 @@ Menu Prompts
 
 Menu Option: V
     Meets Expectations:
-        ☐ When the user enters V, the User is prompted to enter a product ID number, and after doing so, a human-readable print of the correct product's information will be displayed in the terminal. @started(24-09-11 19:28)
+        ✔ When the user enters V, the User is prompted to enter a product ID number, and after doing so, a human-readable print of the correct product's information will be displayed in the terminal. @started(24-09-11 19:28) @done(24-09-26 08:40) @lasted(2w13h12m4s)
         NOTE: Product information data should always be queried from the database.
         If the user enters a product ID that does not exist, a human-readable error message will be displayed, and the user will be prompted to try again.
 
