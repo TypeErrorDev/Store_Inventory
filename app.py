@@ -1,6 +1,6 @@
 from models import Base, session, Products, Brands, engine
 from datetime import datetime
-from sqlalchemy import select, func
+from sqlalchemy import func
 import csv
 import time
 
@@ -92,6 +92,7 @@ def initialize_brands_csv():
                     # DEBUG
                     print(f'Brand {row[0]} already exists in the database.')
         session.commit()
+        # DEBUG
         print(f"Added {len(brands_added)} brands from brands.csv")
         return brands_added            
 
@@ -195,6 +196,7 @@ def app():
                   \rPrice: {the_product.product_price}
                   \rLast Updated: {the_product.date_updated.strftime('%m/%d/%Y')}
                   ''')
+            time.sleep(1.5)
         elif choice == 'n':
             # Add product
                 name = input('What is the name of the product: ')
@@ -204,6 +206,7 @@ def app():
                     price = clean_price(price)
                     if type(price) == int:
                         price_error = False
+                        # DEBUG
                         print(price)
                 quantity = input('How many are in stock: ')
                 # Date Updated...How do I add the current timestamp for record being committed/updated
@@ -231,7 +234,13 @@ def app():
                     else:
                         print('Product addition canceled...')
                 else:
-                    new_product = Products(product_name = name,product_price = price, product_quantity = quantity, date_updated = date)
+                    new_product = Products(
+                        product_name = name,
+                        product_price = price, 
+                        product_quantity = quantity, 
+                        date_updated = date,
+                        brand_id=new_brand.brand_id
+                    )
                     new_brand = Brands(brand_name = brand)
 
                     session.add(new_product)
