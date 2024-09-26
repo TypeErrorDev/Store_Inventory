@@ -34,6 +34,7 @@ class Products(Base):
     product_quantity = Column(Integer, nullable=False)
     product_price = Column(Integer, nullable=False)
     date_updated = Column(Date, nullable=False)
+    
 
     brand = relationship("Brands", back_populates="products")
     

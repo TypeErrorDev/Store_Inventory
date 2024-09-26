@@ -188,15 +188,40 @@ def app():
                 id_choice = clean_id(id_choice, id_options)
                 if type(id_choice) == int:
                     id_error = False
-            the_product = session.query(Products).filter(Products.product_id == id_choice).first()
+            the_product = (
+                session.query(Products, Brands.brand_name)
+                    .join(Brands, Products.brand_id == Brands.brand_id)
+                    .filter(Products.product_id == id_choice).first()
+                    )
+
             print(f'''
-                  \nID: {the_product.product_id}
-                  \rName: {the_product.product_name}
-                  \rQuantity: {the_product.product_quantity}
-                  \rPrice: {the_product.product_price}
-                  \rLast Updated: {the_product.date_updated.strftime('%m/%d/%Y')}
+                  \rBrand: {the_product.brand_name}
+                  \rName: {the_product.Products.product_name}
+                  \rQuantity: {the_product.Products.product_quantity}
+                  \rPrice: {the_product.Products.product_price}
+                  \rLast Updated: {the_product.Products.date_updated.strftime('%m/%d/%Y')}
                   ''')
-            time.sleep(1.5)
+            choice = input('''
+                        \rU) Update the product
+                        \rD) Delete the product
+                        \rPress ENTER to return to the main menu..
+                        ''' ).strip().lower()
+            match choice:
+                case 'u':
+                    session.query(Products).filter(Products.product_id == id_choice).update({
+                        Products.product_name: input('What is the new name: '),
+                        Products.product_price: clean_price(input('What is the new price: ')),
+                        Products.product_quantity: input('What is the new quantity: '),
+                        Products.date_updated: clean_date(input('What is the new date: '))
+                    })
+                    session.commit()
+                    print('Product updated successfully!')
+                case 'd':
+                    session.query(Products).filter(Products.product_id == id_choice).delete()
+                    session.commit()
+                    print('Product deleted successfully!')
+                case _:
+                    return menu()
         elif choice == 'n':
             # Add product
                 name = input('What is the name of the product: ')

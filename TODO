@@ -65,7 +65,7 @@ Menu Option: V
 
     Exceeds Expectations:
         ☐ After choosing a product, the user has the ability to edit or delete the product which is then reflected in the database @started(24-09-11 19:28)
-        ☐ When viewing a product, the brand name is shown instead of the brand id @started(24-09-11 19:28)
+        ✔ When viewing a product, the brand name is shown instead of the brand id @started(24-09-11 19:28) @done(24-09-26 09:10) @lasted(2w13h42m6s)
 
 Menu Option: N
     Meets Expectations:
