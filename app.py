@@ -2,7 +2,7 @@ from models import Base, session, Products, Brands, engine
 from datetime import datetime
 from sqlalchemy import func
 import csv
-import time
+# import time
 
 
 def menu():
@@ -188,19 +188,19 @@ def app():
                 id_choice = clean_id(id_choice, id_options)
                 if type(id_choice) == int:
                     id_error = False
-            the_product = (
-                session.query(Products, Brands.brand_name)
+                the_product = (
+                    session.query(Products)
                     .join(Brands, Products.brand_id == Brands.brand_id)
-                    .filter(Products.product_id == id_choice).first()
-                    )
-
-            print(f'''
-                  \rBrand: {the_product.brand_name}
-                  \rName: {the_product.Products.product_name}
-                  \rQuantity: {the_product.Products.product_quantity}
-                  \rPrice: {the_product.Products.product_price}
-                  \rLast Updated: {the_product.Products.date_updated.strftime('%m/%d/%Y')}
-                  ''')
+                    .filter(Products.product_id == id_choice)
+                    .first()
+                )
+                print(f'''
+                    \rBrand: {the_product.brand.brand_name}
+                    \rName: {the_product.product_name}
+                    \rQuantity: {the_product.product_quantity}
+                    \rPrice: ${the_product.product_price / 100:.2f}
+                    \rLast Updated: {the_product.date_updated.strftime('%m/%d/%Y')}
+                    ''')
             choice = input('''
                         \rU) Update the product
                         \rD) Delete the product
@@ -221,64 +221,71 @@ def app():
                     session.commit()
                     print('Product deleted successfully!')
                 case _:
-                    return menu()
+                    continue
         elif choice == 'n':
             # Add product
-                name = input('What is the name of the product: ')
-                price_error = True
-                while price_error:
-                    price = input('How much does it cost (Ex: 10.99): ')
-                    price = clean_price(price)
-                    if type(price) == int:
-                        price_error = False
-                        # DEBUG
-                        print(price)
-                quantity = input('How many are in stock: ')
-                # Date Updated...How do I add the current timestamp for record being committed/updated
-                date_error = True
-                while date_error:
-                    date = input('Created date (Ex: 10/01/2019): ')
-                    date = clean_date(date)
-                    if date is not None:
-                        date_error = False
-                brand = input('What is the brand name: ') 
+            name = input('What is the name of the product: ')
+            price_error = True
+            while price_error:
+                price = input('How much does it cost (Ex: 10.99): ')
+                price = clean_price(price)
+                if type(price) == int:
+                    price_error = False
+            quantity = input('How many are in stock: ')
+            date_error = True
+            while date_error:
+                date = input('Created date (Ex: 10/01/2019): ')
+                date = clean_date(date)
+                if date is not None:
+                    date_error = False
+            brand = input('What is the brand name: ').strip()
 
-                # checking for duplicates
-                brand_in_db = session.query(Brands).filter(Brands.brand_name == brand).one_or_none()
-                brand_id = brand_in_db.brand_id if brand_in_db else None
-                products_in_db = check_for_existing_product(name, brand_id)
-                if products_in_db:
-                    user_choice = input(f'"{name}" is already in the Inventory. Shall we update the record? (y/n): ').strip().lower()
-                    if user_choice == 'y':
-                        products_in_db.product_name = name
-                        products_in_db.product_quantity = quantity
-                        products_in_db.date_updated = date
-                        session.add()
-                        session.commit()
-                        print(f'You have successfully updated {name}')
-                    else:
-                        print('Product addition canceled...')
-                else:
-                    new_product = Products(
-                        product_name = name,
-                        product_price = price, 
-                        product_quantity = quantity, 
-                        date_updated = date,
-                        brand_id=new_brand.brand_id
-                    )
-                    new_brand = Brands(brand_name = brand)
+            # Check if the brand exists, if not create it
+            brand_in_db = session.query(Brands).filter(Brands.brand_name == brand).one_or_none()
+            if not brand_in_db:
+                new_brand = Brands(brand_name=brand)
+                session.add(new_brand)
+                session.flush()  # This will assign an ID to the new brand
+                brand_id = new_brand.brand_id
+            else:
+                brand_id = brand_in_db.brand_id
 
-                    session.add(new_product)
-                    session.add(new_brand)
-                    session.commit()
-                    print(f'''\nSummary of product added to inventory:
-                            \nProduct Name: {name}
-                            \rProduct Cost: {price}
-                            \rProduct QTY: {quantity}
-                            \rProduct Brand: {brand}
-                        ''')
+            # Check for existing product
+            existing_product = check_for_existing_product(name, brand_id)
+            
+            if existing_product:
+                print(f'"{name}" already exists. Updating the record.')
+                existing_product.product_quantity = quantity
+                existing_product.product_price = price
+                existing_product.date_updated = date
+                session.add(existing_product)
+            else:
+                new_product = Products(
+                    product_name=name,
+                    product_price=price, 
+                    product_quantity=quantity, 
+                    date_updated=date,
+                    brand_id=brand_id
+                )
+                session.add(new_product)
+            session.commit()
+            print(f'Product "{name}" has been added/updated successfully with brand_id: {brand_id}')
         elif choice == 'a':
             # Analyze the inventory by:
+            print(f'''
+                \nA) How do you want to analyze your inventor?
+                \nB) Most expensive product?
+                \rC) Lease expensive product? 
+                \rD) Product with the most on hand quantity?
+                \rE) Total inventory value?
+                ''')
+            choice = input('\nWhat would you like to do? ').lower().strip()
+            if choice in ['a','b','c','d','e']:
+                return choice
+            else: 
+                input('''\n****** EEROR ******
+                    \nPlease choose only the options above.
+                    \rPress ENTER to try again.''')
                 # most expensive brand
                 # most common brand
                 # Brand with the largest inventory
