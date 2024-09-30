@@ -165,10 +165,9 @@ def check_for_existing_product(name, brand_id):
     ).one_or_none()
 
 
-def get_product_id_range():
-    min_id = session.query(func.min(Products.product_id)).scalar()
-    max_id = session.query(func.max(Products.product_id)).scalar()
-    return min_id, max_id
+def get_ranked_products():
+    ranked_products = session.query(Products).order_by(Products.product_id).all()
+    return {rank + 1: product.product_id for rank, product in enumerate(ranked_products)}
 
 
 def app():
@@ -176,17 +175,27 @@ def app():
     while app_running:
         choice = menu()
         if choice == 'v':
-            min_id, max_id = get_product_id_range()
+            ranked_products = get_ranked_products()
+            max_rank = len(ranked_products)
             id_options = []
             for product in session.query(Products):
                 id_options.append(product.product_id)
             id_error = True
             while id_error:
-                id_choice = input(f'''
-                    \nProduct ID Range: {min_id}-{max_id}
+                rank_choice = input(f'''
+                    \n****** View a Product ******
+                    \nProduct: 1-{max_rank}
                     \nWhich Product ID do you want to view: ''')
-                id_choice = clean_id(id_choice, id_options)
-                if type(id_choice) == int:
+                try:
+                    rank_choice = int(rank_choice)
+                    if 1 <= rank_choice <= max_rank:
+                        id_choice = ranked_products[rank_choice]
+                        id_error = False
+                    else:
+                        print(f"Please enter a number between 1 and {max_rank}.")
+                except ValueError:
+                    print("Please enter a valid number.")
+                if type(rank_choice) == int:
                     id_error = False
                 the_product = (
                     session.query(Products)
@@ -195,16 +204,18 @@ def app():
                     .first()
                 )
                 print(f'''
+                    \n****** Product Info ******
                     \rBrand: {the_product.brand.brand_name}
                     \rName: {the_product.product_name}
                     \rQuantity: {the_product.product_quantity}
                     \rPrice: ${the_product.product_price / 100:.2f}
                     \rLast Updated: {the_product.date_updated.strftime('%m/%d/%Y')}
                     ''')
-            choice = input('''
-                        \rU) Update the product
-                        \rD) Delete the product
-                        \rPress ENTER to return to the main menu..
+            choice = input(f'''
+                        \n****** Update/Delete Product? ******
+                        \nU) Update the product
+                        \nD) Delete the product
+                        \nPress ENTER to return to the main menu..
                         ''' ).strip().lower()
             match choice:
                 case 'u':
@@ -224,6 +235,9 @@ def app():
                     continue
         elif choice == 'n':
             # Add product
+            print(f'''
+                  \n****** Add A Product ******
+                    ''')
             name = input('What is the name of the product: ')
             price_error = True
             while price_error:
@@ -273,20 +287,26 @@ def app():
         elif choice == 'a':
             # Analyze the inventory by:
             print(f'''
-                \nA) How do you want to analyze your inventor?
-                \nB) Most expensive product?
-                \rC) Lease expensive product? 
+                \n****** Product Analysis ******
+                \nA) Most expensive product?
+                \rB) Lease expensive product? 
+                \rC) Most common brand in inventory?
                 \rD) Product with the most on hand quantity?
                 \rE) Total inventory value?
                 ''')
-            choice = input('\nWhat would you like to do? ').lower().strip()
-            if choice in ['a','b','c','d','e']:
-                return choice
-            else: 
-                input('''\n****** EEROR ******
-                    \nPlease choose only the options above.
-                    \rPress ENTER to try again.''')
-                # most expensive brand
+            analysis_choice = input('\nWhat would you like to do? ').lower().strip()
+            # most expensive brand
+            
+            
+            
+            
+            # if analysis_choice in ['a','b','c','d','e']:
+            #     return analysis_choice
+            # else: 
+            #     input('''\n****** EEROR ******
+            #         \nPlease choose only the options above.
+            #         \rPress ENTER to try again.''')
+                
                 # most common brand
                 # Brand with the largest inventory
                 # least expensive product

@@ -36,7 +36,7 @@ CSV to Database
 
 Add existing data to the database
     Meets Expectations:
-        ☐ The app successfully adds each product contained in the `inventory.csv` file to the database, with the correct value in the correct column @started(24-09-11 19:28)
+        ✔ The app successfully adds each product contained in the `inventory.csv` file to the database, with the correct value in the correct column @started(24-09-11 19:28) @done(24-09-29 21:08) @lasted(2w4d1h40m20s)
         ✔ `product_quantity` as an INTEGER @started(24-09-11 19:28) @done(24-09-26 08:39) @lasted(2w13h11m30s)
         ✔ `product_price` as an INTEGER @started(24-09-11 19:28) @done(24-09-26 08:39) @lasted(2w13h11m30s)
         ✔ `date_updated` as a DATE object @started(24-09-11 19:28) @done(24-09-26 08:39) @lasted(2w13h11m30s)
@@ -44,7 +44,7 @@ Add existing data to the database
         ✔ The `brands.csv` file has also been added to the database @started(24-09-11 19:28) @done(24-09-26 08:39) @lasted(2w13h11m25s)
 
     Exceeds Expectations:
-        ☐ When the contents of `inventory.csv` are being imported and a duplicate product name is found, the app will check to see which product entry was most recently updated and overwrite existing data. @started(24-09-11 19:28)
+        ✔ When the contents of `inventory.csv` are being imported and a duplicate product name is found, the app will check to see which product entry was most recently updated and overwrite existing data. @started(24-09-11 19:28) @done(24-09-29 21:08) @lasted(2w4d1h40m15s)
     
 Menu Prompts
     Meets Expectations:
@@ -64,15 +64,15 @@ Menu Option: V
         If the user enters a product ID that does not exist, a human-readable error message will be displayed, and the user will be prompted to try again.
 
     Exceeds Expectations:
-        ☐ After choosing a product, the user has the ability to edit or delete the product which is then reflected in the database @started(24-09-11 19:28)
+        ✔ After choosing a product, the user has the ability to edit or delete the product which is then reflected in the database @started(24-09-11 19:28) @done(24-09-29 21:08) @lasted(2w4d1h40m35s)
         ✔ When viewing a product, the brand name is shown instead of the brand id @started(24-09-11 19:28) @done(24-09-26 09:10) @lasted(2w13h42m6s)
 
 Menu Option: N
     Meets Expectations:
-        ☐ When the user enters N, they are prompted to enter a product's name, then the product's quantity, then the product's price, and the brand name. This product will then be successfully entered into the database. @started(24-09-11 19:28)
+        ✔ When the user enters N, they are prompted to enter a product's name, then the product's quantity, then the product's price, and the brand name. This product will then be successfully entered into the database. @started(24-09-11 19:28) @done(24-09-29 21:08) @lasted(2w4d1h40m41s)
     
     Exceeds Expectations:
-        ☐ When entering this product into the database, if a duplicate product name is found, the app will update the conflicting entry with the information just provided. @started(24-09-11 19:28)
+        ✔ When entering this product into the database, if a duplicate product name is found, the app will update the conflicting entry with the information just provided. @started(24-09-11 19:28) @done(24-09-29 21:08) @lasted(2w4d1h40m47s)
 
 Menu Option: A
     Meets Expectations:
