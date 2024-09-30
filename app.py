@@ -299,6 +299,9 @@ def app():
                 max_price = session.query(func.round(func.max(Products.product_price / 100),2)).scalar()
                 print(f'''Most Expensive product costs ${max_price}''')
             # most common brand
+                # may be something with session.query(Brands.brand_name, func.count(Products.product_id)
+                # then join Products and Brands.brand_id == Products.brand_id?
+                # then I'll need to order by desc and grab the first/top row (which would be the most common due to the counts)
             # Brand with the largest inventory
             # least expensive product
             # total inventory value
