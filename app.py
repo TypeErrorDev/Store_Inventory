@@ -174,7 +174,7 @@ def app():
     app_running = True
     while app_running:
         choice = menu()
-        if choice == 'v':
+        if choice == 'v': # View a Product
             ranked_products = get_ranked_products()
             max_rank = len(ranked_products)
             id_options = []
@@ -233,8 +233,7 @@ def app():
                     print('Product deleted successfully!')
                 case _:
                     continue
-        elif choice == 'n':
-            # Add product
+        elif choice == 'n': # Add product
             print(f'''
                   \n****** Add A Product ******
                     ''')
@@ -284,8 +283,7 @@ def app():
                 session.add(new_product)
             session.commit()
             print(f'Product "{name}" has been added/updated successfully with brand_id: {brand_id}')
-        elif choice == 'a':
-            # Analyze the inventory by:
+        elif choice == 'a': # Analyze the inventory by:
             print(f'''
                 \n****** Product Analysis ******
                 \nA) Most expensive product?
@@ -307,8 +305,7 @@ def app():
             
             # Press ENTER to return to the main menu..
             pass
-        elif choice == 'b':
-            # Create a backup of the inventory to a csv file
+        elif choice == 'b': # Create a backup of the inventory to a csv file
                 # Needs to create a csv file with the following constraints:
                     # header row with the field titles
                     # Each product is its own row, with each field vaule seperated by a comma
@@ -318,9 +315,10 @@ def app():
                 # Prompt the user to name the backup file
                 # Display the message that the backup was successful
                 # If the backup was not successful, display the error message
+
                 # Press ENTER to return to the main menu..
             pass
-        elif choice == 'q':
+        elif choice == 'q': # Quit the app
             print('\n****** EXITING THE APP! ******')
             app_running = False
 
