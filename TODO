@@ -77,7 +77,7 @@ Menu Option: N
 Menu Option: A
     Meets Expectations:
         When the user Enters `a`
-            ☐ the most expensive item in the database @started(24-09-11 19:28)
+            ✔ the most expensive item in the database @started(24-09-11 19:28) @done(24-09-29 21:21) @lasted(2w4d1h53m23s)
             ☐ the least expensive item @started(24-09-11 19:28)
             ☐ the brand that has the most poducts in the database @started(24-09-11 19:28)
 

@@ -289,30 +289,23 @@ def app():
             print(f'''
                 \n****** Product Analysis ******
                 \nA) Most expensive product?
-                \rB) Lease expensive product? 
+                \rB) Least expensive product? 
                 \rC) Most common brand in inventory?
                 \rD) Product with the most on hand quantity?
                 \rE) Total inventory value?
                 ''')
             analysis_choice = input('\nWhat would you like to do? ').lower().strip()
-            # most expensive brand
+            if analysis_choice == "a":
+
+            # most expensive brand 
+                max_price = session.query(func.round(func.max(Products.product_price / 100),2)).scalar()
+                print(f'''Most Expensive product costs ${max_price}''')
+            # most common brand
+            # Brand with the largest inventory
+            # least expensive product
+            # total inventory value
             
-            
-            
-            
-            # if analysis_choice in ['a','b','c','d','e']:
-            #     return analysis_choice
-            # else: 
-            #     input('''\n****** EEROR ******
-            #         \nPlease choose only the options above.
-            #         \rPress ENTER to try again.''')
-                
-                # most common brand
-                # Brand with the largest inventory
-                # least expensive product
-                # total inventory value
-                
-                # Press ENTER to return to the main menu..
+            # Press ENTER to return to the main menu..
             pass
         elif choice == 'b':
             # Create a backup of the inventory to a csv file
