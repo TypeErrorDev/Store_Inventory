@@ -90,10 +90,10 @@ def initialize_brands_csv():
                     brands_added.append(brand_in_db)
 
                     # DEBUG
-                    print(f'Brand {row[0]} already exists in the database.')
+                    # print(f'Brand {row[0]} already exists in the database.')
         session.commit()
         # DEBUG
-        print(f"Added {len(brands_added)} brands from brands.csv")
+        # print(f"Added {len(brands_added)} brands from brands.csv")
         return brands_added            
 
 
@@ -296,9 +296,8 @@ def app():
                 \rE) Total inventory value?
                 ''')
             analysis_choice = input('\nWhat would you like to do? ').lower().strip()
-            if analysis_choice == "a":
 
-            # most expensive brand 
+            if analysis_choice == "a": # most expensive brand 
                 most_expensive_product = (
                     session.query(Products, Brands)
                     .join(Brands)
@@ -316,18 +315,39 @@ def app():
                             ''') 
                 else:
                     print("No products found...")
-            # most common brand
-            elif analysis_choice == "b":
+            elif analysis_choice == "b": # least expensive product
                 
-                
+                pass
+            elif analysis_choice == "c":  # most common brand
+                most_common_brand = (
+                    session.query(Brands.brand_name, func.count(Products.product_id)
+                                .label('product_count'))
+                                .join(Products, Brands.brand_id == Products.brand_id)
+                                .group_by(Brands.brand_name)
+                                .order_by(func.count(Products.product_id)
+                                .desc())
+                                .first()
+                            )
+                if most_common_brand:
+                    brand_name, product_count = most_common_brand
+                    print(f'''
+                        \n***** Most Common Brand *****
+                        \nBrand Name: {brand_name}
+                        \rProduct Count: {product_count}
+                    ''')
+                else:
+                    print("No brands found in the database.")
                 # may be something with session.query(Brands.brand_name, func.count(Products.product_id)
                 # then join Products and Brands.brand_id == Products.brand_id?
                 # then I'll need to order by desc and grab the first/top row (which would be the most common due to the counts)
-            # Brand with the largest inventory
-            # least expensive product
-            # total inventory value
-            
-            # Press ENTER to return to the main menu..
+                pass
+            elif analysis_choice == "d":  # Brand with the largest inventory
+                
+                pass
+            elif analysis_choice == "e": # total inventory value
+                
+                pass
+            else: # Press ENTER to return to the main menu..
                 pass
         elif choice == 'b': # Create a backup of the inventory to a csv file
                 # Needs to create a csv file with the following constraints:
