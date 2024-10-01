@@ -373,11 +373,14 @@ def app():
                     ''')
                 else:
                     print("No products found...")
-            elif analysis_choice == "e": # total inventory value
-                
-                pass
-            else: # Press ENTER to return to the main menu..
-                pass
+            elif analysis_choice == "e": # total inventory value #DONE
+                total_inventory_value = session.query(
+                    func.sum(Products.product_price * Products.product_quantity)
+                    ).scalar()
+                if total_inventory_value:
+                    print(f'Total Inventory Value: ${total_inventory_value / 100:.2f}')
+                else:
+                    print('No products found in the inventory.')
         elif choice == 'b': # Create a backup of the inventory to a csv file
                 # Needs to create a csv file with the following constraints:
                     # header row with the field titles
