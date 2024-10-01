@@ -297,7 +297,7 @@ def app():
                 ''')
             analysis_choice = input('\nWhat would you like to do? ').lower().strip()
 
-            if analysis_choice == "a": # most expensive brand 
+            if analysis_choice == "a": # most expensive brand #DONE
                 most_expensive_product = (
                     session.query(Products, Brands)
                     .join(Brands)
@@ -315,13 +315,28 @@ def app():
                             ''') 
                 else:
                     print("No products found...")
-            elif analysis_choice == "b": # least expensive product
-                
-                pass
-            elif analysis_choice == "c":  # most common brand
+            elif analysis_choice == "b": # least expensive product #DONE
+                least_expensive_product = (
+                    session.query(Products, Brands)
+                    .join(Brands)
+                    .order_by(Products.product_price)
+                    .first()
+                )
+                if least_expensive_product:
+                    product, brand = least_expensive_product
+                    print(f'''
+                            \n***** Least Expensive Product *****
+                            \nName: {product.product_name}
+                            \rBrand: {brand.brand_name}
+                            \rPrice: ${product.product_price / 100:.2f}
+                            \rQuantity: {product.product_quantity}
+                            ''') 
+                else:
+                    print("No products found...")
+            elif analysis_choice == "c":  # most common brand #DONE
                 most_common_brand = (
                     session.query(Brands.brand_name, func.count(Products.product_id)
-                                .label('product_count'))
+                                .label('most_common_brand'))
                                 .join(Products, Brands.brand_id == Products.brand_id)
                                 .group_by(Brands.brand_name)
                                 .order_by(func.count(Products.product_id)
@@ -337,13 +352,27 @@ def app():
                     ''')
                 else:
                     print("No brands found in the database.")
-                # may be something with session.query(Brands.brand_name, func.count(Products.product_id)
-                # then join Products and Brands.brand_id == Products.brand_id?
-                # then I'll need to order by desc and grab the first/top row (which would be the most common due to the counts)
-                pass
-            elif analysis_choice == "d":  # Brand with the largest inventory
-                
-                pass
+            elif analysis_choice == "d":  # Brand with the largest inventory #DONE
+                product_with_most_quantity = (
+                    session.query(
+                        Products.product_name,
+                        Brands.brand_name,
+                        Products.product_quantity
+                    )
+                    .join(Brands, Products.brand_id == Brands.brand_id)
+                    .order_by(Products.product_quantity.desc())
+                    .first()
+                )
+                if product_with_most_quantity:
+                    product_name, brand_name, quantity = product_with_most_quantity
+                    print(f'''
+                        \n***** Product with Most Quantity *****
+                        \nName: {product_name}
+                        \rBrand: {brand_name}
+                        \rQuantity: {quantity}
+                    ''')
+                else:
+                    print("No products found...")
             elif analysis_choice == "e": # total inventory value
                 
                 pass
