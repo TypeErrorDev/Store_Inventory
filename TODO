@@ -78,16 +78,16 @@ Menu Option: A
     Meets Expectations:
         When the user Enters `a`
             ✔ the most expensive item in the database @started(24-09-11 19:28) @done(24-09-29 21:21) @lasted(2w4d1h53m23s)
-            ☐ the least expensive item @started(24-09-11 19:28)
-            ☐ the brand that has the most poducts in the database @started(24-09-11 19:28)
+            ✔ the least expensive item @started(24-09-11 19:28) @done(24-10-01 15:44) @lasted(2w5d20h16m45s)
+            ✔ the brand that has the most poducts in the database @started(24-09-11 19:28) @done(24-10-01 15:44) @lasted(2w5d20h16m43s)
 
     Exceeds Expectations:
-        ☐ Create two additional analysis points for the use to view @started(24-09-11 19:28)
+        ✔ Create two additional analysis points for the use to view @started(24-09-11 19:28) @done(24-10-01 15:44) @lasted(2w5d20h16m41s)
 
 Menu Option: B
     Meets Expectations:
         When the user enters `b`
-            ☐ create csv files called `backup_inventory.csv` and `backup_brands.csv`. It should contain the current contents of the database tables. @started(24-09-11 19:28)
+            ✔ create csv files called `backup_inventory.csv` and `backup_brands.csv`. It should contain the current contents of the database tables. @started(24-09-11 19:28) @done(24-10-01 15:59) @lasted(2w5d20h31m7s)
             NOTE: Each product must be on its own line, with each field value separated by a comma. This file must be generated into the project folder.
 
     Exceeds Expectations:

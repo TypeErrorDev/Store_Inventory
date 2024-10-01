@@ -88,12 +88,7 @@ def initialize_brands_csv():
                     brands_added.append(new_brand)
                 else:
                     brands_added.append(brand_in_db)
-
-                    # DEBUG
-                    # print(f'Brand {row[0]} already exists in the database.')
         session.commit()
-        # DEBUG
-        # print(f"Added {len(brands_added)} brands from brands.csv")
         return brands_added            
 
 
@@ -169,6 +164,42 @@ def get_ranked_products():
     ranked_products = session.query(Products).order_by(Products.product_id).all()
     return {rank + 1: product.product_id for rank, product in enumerate(ranked_products)}
 
+
+def backup_inventory_and_brands():
+    inventory_csv = 'backup_inventory.csv'
+    brands_csv = 'backup_brands.csv'
+    try:
+        with open(inventory_csv, mode='w', newline='') as inv_file:
+            inv_writer = csv.writer(inv_file)
+            inv_writer.writerow(['Product ID','Product Name', 'Quantity', 'Price', 'Last Updated'])
+
+            products = session.query(Products).join(Brands).all()
+            for product in products:
+                inv_writer.writerow([
+                    product.product_id,
+                    product.product_name,
+                    product.product_quantity,
+                    f"${product.product_price / 100:.2f}",
+                    product.date_updated.strftime('%m/%d/%Y')
+                ])
+        print(f'''
+            \n****** Main Inventory Menu ******
+        ''')
+        print(f'\nSuccessfully backed up inventory to {inventory_csv}')
+    except Exception as e:
+        print(f'\nError writing to {inventory_csv}: {e}')
+
+    try:
+        with open(brands_csv, mode='w', newline='') as brand_file:
+            brand_writer = csv.writer(brand_file)
+            brand_writer.writerow(['Brand ID', 'Brand Name'])
+
+            brands = session.query(Brands).all()
+            for brand in brands:
+                brand_writer.writerow([brand.brand_id, brand.brand_name])
+        print(f'\rSuccessfully backed up brands to {brands_csv}')
+    except Exception as e:
+        print(f'\nError writing to {brands_csv}: {e}')
 
 def app():
     app_running = True
@@ -382,18 +413,8 @@ def app():
                 else:
                     print('No products found in the inventory.')
         elif choice == 'b': # Create a backup of the inventory to a csv file
-                # Needs to create a csv file with the following constraints:
-                    # header row with the field titles
-                    # Each product is its own row, with each field vaule seperated by a comma
-                    # must be saved in the same directory as the app.py file
-                    # date is in the same format as the original csv file (m/d/yyyy)
-                    # price is in the same format as the original csv file ($0.00) rather than cents
-                # Prompt the user to name the backup file
-                # Display the message that the backup was successful
-                # If the backup was not successful, display the error message
-
-                # Press ENTER to return to the main menu..
-            pass
+            backup_inventory_and_brands()
+            input(f"\nPress ENTER to return to the main menu...")
         elif choice == 'q': # Quit the app
             print('\n****** EXITING THE APP! ******')
             app_running = False
