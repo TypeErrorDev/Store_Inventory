@@ -8,7 +8,7 @@ import csv
 def menu():
     while True:
         print('''
-            \n****** Inventory Menu ******
+            \n****** Main Inventory Menu ******
             \nV) View a single product's inventory
             \rN) Add a new product to the database
             \rA) View the analysis options
@@ -195,14 +195,14 @@ def app():
                         print(f"Please enter a number between 1 and {max_rank}.")
                 except ValueError:
                     print("Please enter a valid number.")
-                if type(rank_choice) == int:
-                    id_error = False
-                the_product = (
-                    session.query(Products)
-                    .join(Brands, Products.brand_id == Brands.brand_id)
-                    .filter(Products.product_id == id_choice)
-                    .first()
+                # handle the case where the user enters a number that is not in the list
+            the_product = (
+                session.query(Products)
+                .join(Brands, Products.brand_id == Brands.brand_id)
+                .filter(Products.product_id == id_choice)
+                .first()
                 )
+            if the_product:
                 print(f'''
                     \n****** Product Info ******
                     \rBrand: {the_product.brand.brand_name}
@@ -211,28 +211,31 @@ def app():
                     \rPrice: ${the_product.product_price / 100:.2f}
                     \rLast Updated: {the_product.date_updated.strftime('%m/%d/%Y')}
                     ''')
-            choice = input(f'''
-                        \n****** Update/Delete Product? ******
-                        \nU) Update the product
-                        \nD) Delete the product
-                        \nPress ENTER to return to the main menu..
-                        ''' ).strip().lower()
-            match choice:
-                case 'u':
-                    session.query(Products).filter(Products.product_id == id_choice).update({
-                        Products.product_name: input('What is the new name: '),
-                        Products.product_price: clean_price(input('What is the new price: ')),
-                        Products.product_quantity: input('What is the new quantity: '),
-                        Products.date_updated: clean_date(input('What is the new date: '))
-                    })
-                    session.commit()
-                    print('Product updated successfully!')
-                case 'd':
-                    session.query(Products).filter(Products.product_id == id_choice).delete()
-                    session.commit()
-                    print('Product deleted successfully!')
-                case _:
-                    continue
+                
+                choice = input(f'''
+                            \n****** Update/Delete Product? ******
+                            \nU) Update the product
+                            \nD) Delete the product
+                            \nPress ENTER to return to the main menu..
+                            ''' ).strip().lower()
+                match choice:
+                    case 'u':
+                        session.query(Products).filter(Products.product_id == id_choice).update({
+                            Products.product_name: input('What is the new name: '),
+                            Products.product_price: clean_price(input('What is the new price: ')),
+                            Products.product_quantity: input('What is the new quantity: '),
+                            Products.date_updated: clean_date(input('What is the new date: '))
+                        })
+                        session.commit()
+                        print('Product updated successfully!')
+                    case 'd':
+                        session.query(Products).filter(Products.product_id == id_choice).delete()
+                        session.commit()
+                        print('Product deleted successfully!')
+                    case _:
+                        continue
+            else:
+                print(f'No product found with the ID of {id_choice}')
         elif choice == 'n': # Add product
             print(f'''
                   \n****** Add A Product ******
@@ -296,9 +299,27 @@ def app():
             if analysis_choice == "a":
 
             # most expensive brand 
-                max_price = session.query(func.round(func.max(Products.product_price / 100),2)).scalar()
-                print(f'''Most Expensive product costs ${max_price}''')
+                most_expensive_product = (
+                    session.query(Products, Brands)
+                    .join(Brands)
+                    .order_by(Products.product_price.desc())
+                    .first()
+                )
+                if most_expensive_product:
+                    product, brand = most_expensive_product
+                    print(f'''
+                            \n***** Most Expensive Product *****
+                            \nName: {product.product_name}
+                            \rBrand: {brand.brand_name}
+                            \rPrice: ${product.product_price / 100:.2f}
+                            \rQuantity: {product.product_quantity}
+                            ''') 
+                else:
+                    print("No products found...")
             # most common brand
+            elif analysis_choice == "b":
+                
+                
                 # may be something with session.query(Brands.brand_name, func.count(Products.product_id)
                 # then join Products and Brands.brand_id == Products.brand_id?
                 # then I'll need to order by desc and grab the first/top row (which would be the most common due to the counts)
@@ -307,7 +328,7 @@ def app():
             # total inventory value
             
             # Press ENTER to return to the main menu..
-            pass
+                pass
         elif choice == 'b': # Create a backup of the inventory to a csv file
                 # Needs to create a csv file with the following constraints:
                     # header row with the field titles
