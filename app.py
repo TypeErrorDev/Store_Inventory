@@ -103,9 +103,7 @@ def initialize_inventory_csv(existing_brands):
                 product_quantity = int(row[2].strip())   
                 date_updated = clean_date(row[3].strip())  
                 brand_name = row[4].strip()  
-                # Ensure that the price and date are valid
                 if product_price is not None and date_updated is not None:
-                    # Check if the brand already exists in the database
                     brand = check_for_existing_brands(brand_name)
                     if brand:
                         brand_id = brand.brand_id
@@ -115,8 +113,6 @@ def initialize_inventory_csv(existing_brands):
                         session.add(brand)
                         session.flush()
                         brand_id = brand.brand_id
-
-                    # Check if the product already exists in the database
                     existing_product = session.query(Products).filter(
                         Products.product_name == product_name,
                         Products.brand_id == brand_id
@@ -226,7 +222,6 @@ def app():
                         print(f"Please enter a number between 1 and {max_rank}.")
                 except ValueError:
                     print("Please enter a valid number.")
-                # handle the case where the user enters a number that is not in the list
             the_product = (
                 session.query(Products)
                 .join(Brands, Products.brand_id == Brands.brand_id)
@@ -292,7 +287,7 @@ def app():
             if not brand_in_db:
                 new_brand = Brands(brand_name=brand)
                 session.add(new_brand)
-                session.flush()  # This will assign an ID to the new brand
+                session.flush()  
                 brand_id = new_brand.brand_id
             else:
                 brand_id = brand_in_db.brand_id

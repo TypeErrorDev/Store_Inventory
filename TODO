@@ -40,7 +40,7 @@ Add existing data to the database
         ✔ `product_quantity` as an INTEGER @started(24-09-11 19:28) @done(24-09-26 08:39) @lasted(2w13h11m30s)
         ✔ `product_price` as an INTEGER @started(24-09-11 19:28) @done(24-09-26 08:39) @lasted(2w13h11m30s)
         ✔ `date_updated` as a DATE object @started(24-09-11 19:28) @done(24-09-26 08:39) @lasted(2w13h11m30s)
-        ☐ `brand_id` must be an INTEGER and foreign key on the products table @started(24-09-11 19:28)
+        ✔ `brand_id` must be an INTEGER and foreign key on the products table @started(24-09-11 19:28) @done(24-10-01 16:16) @lasted(2w5d20h48m3s)
         ✔ The `brands.csv` file has also been added to the database @started(24-09-11 19:28) @done(24-09-26 08:39) @lasted(2w13h11m25s)
 
     Exceeds Expectations:
@@ -91,5 +91,5 @@ Menu Option: B
             NOTE: Each product must be on its own line, with each field value separated by a comma. This file must be generated into the project folder.
 
     Exceeds Expectations:
-        ☐ The csv files contain a header row with the field titles @started(24-09-11 19:28)
-        ☐ The data is in the same format as the original csv with the price as `$0.00` rather than cents, date as `m/d/yyyy`, and the brand id as the brand name @started(24-09-11 19:28)
+        ✔ The csv files contain a header row with the field titles @started(24-09-11 19:28) @done(24-10-01 16:15) @lasted(2w5d20h47m51s)
+        ✔ The data is in the same format as the original csv with the price as `$0.00` rather than cents, date as `m/d/yyyy`, and the brand id as the brand name @started(24-09-11 19:28) @done(24-10-01 16:15) @lasted(2w5d20h47m51s)
