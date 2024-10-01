@@ -2,7 +2,6 @@ from models import Base, session, Products, Brands, engine
 from datetime import datetime
 from sqlalchemy import func
 import csv
-# import time
 
 
 def menu():
@@ -19,12 +18,13 @@ def menu():
             return choice
         else: 
             input('''\n****** EEROR ******
-                  \nPlease choose only the options above.
-                  \rPress ENTER to try again.''')
+                \nPlease choose only the options above.
+                \rPress ENTER to try again.''')
 
 
 def clean_date(date_str):
     try:
+        # converts the date into mm/dd/yyyy
         return datetime.strptime(date_str, '%m/%d/%Y').date()
     except ValueError:
         print(f'''
@@ -244,9 +244,9 @@ def app():
                     ''')
                 
                 choice = input(f'''
-                            \n****** Update/Delete Product? ******
-                            \nU) Update the product
-                            \nD) Delete the product
+                            \r****** Update/Delete Product? ******
+                            \rU) Update the product
+                            \rD) Delete the product
                             \nPress ENTER to return to the main menu..
                             ''' ).strip().lower()
                 match choice:
@@ -316,7 +316,7 @@ def app():
                 )
                 session.add(new_product)
             session.commit()
-            print(f'Product "{name}" has been added/updated successfully with brand_id: {brand_id}')
+            print(f'Product "{name}" has been added successfully...')
         elif choice == 'a': # Analyze the inventory by:
             print(f'''
                 \n****** Product Analysis ******
