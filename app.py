@@ -2,6 +2,7 @@ from models import Base, session, Products, Brands, engine
 from datetime import datetime
 from sqlalchemy import func
 import csv
+import time
 
 
 def menu():
@@ -167,12 +168,13 @@ def backup_inventory_and_brands():
     try:
         with open(inventory_csv, mode='w', newline='') as inv_file:
             inv_writer = csv.writer(inv_file)
-            inv_writer.writerow(['Product ID','Product Name', 'Quantity', 'Price', 'Last Updated'])
+            inv_writer.writerow(['Product ID','Brand Name', 'Product Name', 'Quantity', 'Price', 'Last Updated'])
 
             products = session.query(Products).join(Brands).all()
             for product in products:
                 inv_writer.writerow([
                     product.product_id,
+                    product.brand.brand_name,
                     product.product_name,
                     product.product_quantity,
                     f"${product.product_price / 100:.2f}",
@@ -237,7 +239,7 @@ def app():
                     \rPrice: ${the_product.product_price / 100:.2f}
                     \rLast Updated: {the_product.date_updated.strftime('%m/%d/%Y')}
                     ''')
-                
+                time.sleep(1.5)
                 choice = input(f'''
                             \r****** Update/Delete Product? ******
                             \rU) Update the product
